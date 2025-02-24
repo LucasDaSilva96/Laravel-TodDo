@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -86,6 +87,10 @@ Route::get('/', function () use ($tasks) {
 
 Route::get('/task/{id}', function (int $id) use ($tasks) {
     $task = collect($tasks)->firstWhere('id', $id);
+
+    if(!$task){
+        abort(Response::HTTP_NOT_FOUND);
+    }
     return Inertia::render('Tasks/Task', [
         'task' => $task,
     ]);

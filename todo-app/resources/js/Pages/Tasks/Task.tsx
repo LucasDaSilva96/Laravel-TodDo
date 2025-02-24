@@ -13,6 +13,9 @@ export default function TaskComponent({ task }: { task: Task }) {
                 <div className='bg-neutral-500 w-full max-w-md shadow-md rounded-md p-4 mb-2'>
                     <h3 className='text-lg font-semibold '>{task.title}</h3>
                     <p>{task.description}</p>
+                    {task.long_description && <p>{task.long_description}</p>}
+                    {task.completed && <p className='text-green-500'>Completed</p>}
+                    {!task.completed && <p className='text-red-500'>Not Completed</p>}
                 </div>
             )}
         </section>
