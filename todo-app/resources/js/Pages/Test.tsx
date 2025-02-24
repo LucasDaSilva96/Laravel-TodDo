@@ -1,5 +1,5 @@
 import { motion } from "motion/react"
-export default function Test() {
+export default function Test({ name }: { name?: string }) {
     return (
         <motion.section className='w-full h-screen flex justify-center items-center bg-black' initial={{
             opacity: 0
@@ -22,7 +22,8 @@ export default function Test() {
                     delay: 0.5,
                     duration: 0.5,
                 }}
-                className='text-center text-slate-50 text-2xl'>Hello World</motion.h1>
+                className='text-center text-slate-50 text-2xl'>Hello World {name ? name : ''}
+            </motion.h1>
         </motion.section>
     )
 }
