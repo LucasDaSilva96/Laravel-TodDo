@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Models\Task;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -23,21 +24,37 @@ Route::get('/tasks/create', function () {
 })->name('tasks.create');
 
 
-Route::post('/tasks', function () {
-    request()->validate([
-        'title' => 'required',
-        'description' => 'required',
-    ]);
 
-    Task::create([
-        'title' => request('title'),
-        'description'=> request('description'),
-        'completed' => request('completed'),
-        'long_description' => request('long_description') ?? null,
-    ]);
+Route::get('/task/{id}', function (int $id) {
+    $task = Task::findOrFail( $id );
 
-    return redirect()->route('tasks.index');
-})->name('tasks.store');
+    // if(!$task){
+        //     abort(Response::HTTP_NOT_FOUND);
+        // }
+        return Inertia::render('Tasks/Task', [
+            'task' => $task,
+        ]);
+    })->name('task.edit');
+
+    Route::post('/tasks', function (Request $request) {
+       $data =  $request->validate([
+            'title' => 'required',
+            'description' => 'required',
+            'long_description' => 'nullable',
+            'completed' => 'required',
+        ]);
+
+        $task = new Task();
+        $task->title = $data['title'];
+        $task->description = $data['description'];
+        $task->long_description = $data['long_description'];
+        $task->completed = $data['completed'];
+        $task->save();
+
+
+        return redirect()->route('task.edit', ['id' => $task->id]);
+    })->name('tasks.store');
+
 
 Route::patch('/tasks/{id}', function (int $id){
 
@@ -96,16 +113,6 @@ Route::get('old', function(){
 //     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 // });
 
-Route::get('/task/{id}', function (int $id) {
-    $task = Task::findOrFail( $id );
-
-    // if(!$task){
-    //     abort(Response::HTTP_NOT_FOUND);
-    // }
-    return Inertia::render('Tasks/Task', [
-        'task' => $task,
-    ]);
-})->name('task.edit');
 
 
 Route::fallback(function () {

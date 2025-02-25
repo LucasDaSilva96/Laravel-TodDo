@@ -17,12 +17,6 @@ export default function CreateForm() {
         const long_description = formData.get('long_description') as string;
         const completed = formData.get('completed') as string;
 
-
-        if (!title || !description) {
-            window.alert('All fields are required');
-            return;
-        }
-
         router.post('/tasks', {
             title,
             description,
@@ -41,11 +35,11 @@ export default function CreateForm() {
                 <form ref={formRef} onSubmit={handleSubmit} className='w-full max-w-md bg-neutral-500 shadow-md rounded-md p-4'>
                     <div className='mb-2'>
                         <label htmlFor='title' className='block'>Title</label>
-                        <input type='text' name='title' id='title' className='w-full p-2 rounded-md text-black' />
+                        <input required type='text' name='title' id='title' className='w-full p-2 rounded-md text-black' />
                     </div>
                     <div className='mb-2'>
                         <label htmlFor='description' className='block'>Description</label>
-                        <input type='text' name='description' id='description' className='w-full p-2 rounded-md text-black' />
+                        <input required type='text' name='description' id='description' className='w-full p-2 rounded-md text-black' />
                     </div>
                     <div className='mb-2'>
                         <label htmlFor='long_description' className='block'>Long Description</label>
