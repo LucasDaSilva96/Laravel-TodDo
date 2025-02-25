@@ -1,8 +1,24 @@
 import { Task } from '@/types'
-import { Link } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
+import { useState } from 'react'
 
 export default function TaskComponent({ task }: { task: Task }) {
-    console.log(task)
+    const [isCompleted, setIsCompleted] = useState<boolean>(task.completed)
+
+    const handleUpdateStatus = () => {
+        setIsCompleted(!isCompleted)
+
+        router.patch(`/tasks/${task.id}`, {
+            completed: !isCompleted
+        })
+
+    }
+
+    const handleDelete = () => {
+        router.delete(`/tasks/${task
+            .id}`)
+    }
+
     return (
         <section className='w-full min-h-screen flex items-center justify-center bg-black text-slate-50'
         >
@@ -16,6 +32,15 @@ export default function TaskComponent({ task }: { task: Task }) {
                     {task.long_description && <p>{task.long_description}</p>}
                     {task.completed && <p className='text-green-500'>Completed</p>}
                     {!task.completed && <p className='text-red-500'>Not Completed</p>}
+                    <div className='w-full flex items-center justify-between p-1'>
+
+                        <button onClick={handleUpdateStatus} className='bg-blue-500 p-2 rounded-md'>
+                            {isCompleted ? 'Mark as not completed' : 'Mark as completed'}
+                        </button>
+                        <button onClick={handleDelete} className='bg-red-500 p-2 rounded-md'>
+                            Delete
+                        </button>
+                    </div>
                 </div>
             )}
         </section>
