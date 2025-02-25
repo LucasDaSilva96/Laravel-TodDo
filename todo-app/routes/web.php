@@ -38,10 +38,10 @@ Route::get('/task/{id}', function (int $id) {
 
     Route::post('/tasks', function (Request $request) {
        $data =  $request->validate([
-            'title' => 'required',
+            'title' => 'required|max:255',
             'description' => 'required',
             'long_description' => 'nullable',
-            'completed' => 'required',
+            'completed' => 'required|boolean',
         ]);
 
         $task = new Task();
@@ -52,7 +52,10 @@ Route::get('/task/{id}', function (int $id) {
         $task->save();
 
 
-        return redirect()->route('task.edit', ['id' => $task->id]);
+       return Inertia::render('Tasks/Task', [
+        'task' => $task,
+        'success' => 'Task created successfully',
+    ]);
     })->name('tasks.store');
 
 

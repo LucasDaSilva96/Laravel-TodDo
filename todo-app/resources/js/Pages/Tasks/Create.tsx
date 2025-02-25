@@ -1,11 +1,13 @@
 import DefaultLayout from '@/Layouts/DefaultLayout';
-import { Head, router } from '@inertiajs/react';
+import { Head, router, usePage } from '@inertiajs/react';
 import { useRef } from 'react';
 
 
 export default function CreateForm() {
 
     const formRef = useRef<HTMLFormElement | null>(null);
+
+    const { errors } = usePage().props;
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -36,18 +38,22 @@ export default function CreateForm() {
                     <div className='mb-2'>
                         <label htmlFor='title' className='block'>Title</label>
                         <input required type='text' name='title' id='title' className='w-full p-2 rounded-md text-black' />
+                        {errors.title && <p className='text-red-500'>{errors.title}</p>}
                     </div>
                     <div className='mb-2'>
                         <label htmlFor='description' className='block'>Description</label>
                         <input required type='text' name='description' id='description' className='w-full p-2 rounded-md text-black' />
+                        {errors.description && <p className='text-red-500'>{errors.description}</p>}
                     </div>
                     <div className='mb-2'>
                         <label htmlFor='long_description' className='block'>Long Description</label>
                         <textarea name='long_description' id='long_description' className='w-full p-2 rounded-md text-black'></textarea>
+                        {errors.long_description && <p className='text-red-500'>{errors.long_description}</p>}
                     </div>
                     <div className='mb-2'>
                         <label htmlFor='completed' className='block'>Completed</label>
                         <input type='checkbox' name='completed' id='completed' className='p-2 rounded-md' />
+                        {errors.completed && <p className='text-red-500'>{errors.completed}</p>}
                     </div>
                     <button type='submit' className='bg-blue-500 p-2 rounded-md'>Create Task</button>
                 </form>
