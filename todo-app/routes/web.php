@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Requests\TaskRequest;
 use App\Models\Task;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ use Inertia\Inertia;
 
 
 Route::get('/', function ()  {
-    $tasks =  Task::select('*')->orderBy('created_at','desc')->get();
+    $tasks =  Task::paginate(10);
     return Inertia::render('Tasks/Index', [
        'tasks' => $tasks,
     ]);
@@ -25,8 +26,7 @@ Route::get('/tasks/create', function () {
 
 
 
-Route::get('/task/{id}', function (int $id) {
-    $task = Task::findOrFail( $id );
+Route::get('/task/{task}', function (Task $task) {
 
     // if(!$task){
         //     abort(Response::HTTP_NOT_FOUND);
@@ -36,41 +36,38 @@ Route::get('/task/{id}', function (int $id) {
         ]);
     })->name('task.edit');
 
-    Route::post('/tasks', function (Request $request) {
-       $data =  $request->validate([
-            'title' => 'required|max:255',
-            'description' => 'required',
-            'long_description' => 'nullable',
-            'completed' => 'required|boolean',
-        ]);
-
-        $task = new Task();
-        $task->title = $data['title'];
-        $task->description = $data['description'];
-        $task->long_description = $data['long_description'];
-        $task->completed = $data['completed'];
-        $task->save();
+Route::post('/tasks', function (TaskRequest $request) {
+    $data = $request->validated();
 
 
-       return Inertia::render('Tasks/Task', [
-        'task' => $task,
-        'success' => 'Task created successfully',
-    ]);
-    })->name('tasks.store');
+    // $task = new Task();
+    // $task->title = $data['title'];
+    // $task->description = $data['description'];
+    // $task->long_description = $data['long_description'];
+    // $task->completed = $data['completed'];
+    // $task->save();
+
+$task = Task::create($request->validated());
 
 
-Route::patch('/tasks/{id}', function (int $id){
+return Inertia::render('Tasks/Task', [
+    'task' => $task,
+    'success' => 'Task created successfully',
+]);
+})->name('tasks.store');
+
+
+Route::patch('/tasks/{id}', function (int $id) {
 
     $task = Task::findOrFail($id);
-    $task->completed = request('completed');
-    $task->save();
+    $task->toggleCompleted();
 
 }
 )->name('tasks.update');
 
 
-Route::delete('/tasks/{id}', function (int $id){
-    $task = Task::findOrFail($id);
+Route::delete('/tasks/{task}', function (Task $task) {
+
     $task->delete();
     return redirect()->route('tasks.index');
 })->name('tasks.destroy');
