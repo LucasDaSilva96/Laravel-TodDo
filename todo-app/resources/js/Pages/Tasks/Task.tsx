@@ -1,5 +1,5 @@
 import { Task } from '@/types'
-import { Link, router, usePage } from '@inertiajs/react'
+import { Link, router } from '@inertiajs/react'
 import { useEffect, useState } from 'react'
 import { AnimatePresence, motion } from 'motion/react'
 
@@ -7,7 +7,6 @@ export default function TaskComponent({ task, success }: { task: Task, success?:
     const [isCompleted, setIsCompleted] = useState<boolean>(task.completed)
     const [showToast, setShowToast] = useState<boolean>(success ? true : false)
 
-    const page = usePage();
 
     const handleUpdateStatus = () => {
         setIsCompleted(!isCompleted)
